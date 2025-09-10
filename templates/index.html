@@ -7,8 +7,13 @@
 </head>
 <body>
     <h1>🔎 Buscador Inteligente</h1>
+
+    <!-- Botón para modo oscuro -->
+    <button id="toggle-dark">🌙 Modo oscuro</button>
+
     <form method="post">
-        <input type="text" name="query" value="{{ query }}" placeholder="Escribe tu búsqueda..." autocomplete="off">
+        <!-- Input vacío para no recordar la última búsqueda -->
+        <input type="text" name="query" value="" placeholder="Escribe tu búsqueda..." autocomplete="off">
         <button type="submit">Buscar</button>
     </form>
 
@@ -16,7 +21,7 @@
         <h2>Resultados:</h2>
         <ul>
         {% for url, texto, score in resultados %}
-            <li>
+            <li class="result">
                 <a href="{{ url }}" target="_blank">{{ url }}</a><br>
                 <small>Relevancia: {{ "%.2f"|format(score) }}</small>
                 <p>{{ texto[:300] }}{% if texto|length > 300 %}...{% endif %}</p>
@@ -27,27 +32,55 @@
         {% if total_pages > 1 %}
         <div class="pagination">
             {% if page > 1 %}
-                <a href="/?query={{ query }}&page=1">Primera</a>
-                <a href="/?query={{ query }}&page={{ page-1 }}">« Anterior</a>
+                <a href="/?page=1">Primera</a>
+                <a href="/?page={{ page-1 }}">« Anterior</a>
             {% endif %}
 
-            {# Mostrar 2 páginas antes y después de la actual #}
             {% for p in range(page-2, page+3) %}
                 {% if 1 <= p <= total_pages %}
                     {% if p == page %}
                         <span class="current">{{ p }}</span>
                     {% else %}
-                        <a href="/?query={{ query }}&page={{ p }}">{{ p }}</a>
+                        <a href="/?page={{ p }}">{{ p }}</a>
                     {% endif %}
                 {% endif %}
             {% endfor %}
 
             {% if page < total_pages %}
-                <a href="/?query={{ query }}&page={{ page+1 }}">Siguiente »</a>
-                <a href="/?query={{ query }}&page={{ total_pages }}">Última</a>
+                <a href="/?page={{ page+1 }}">Siguiente »</a>
+                <a href="/?page={{ total_pages }}">Última</a>
             {% endif %}
         </div>
         {% endif %}
     {% endif %}
+
+    <!-- Script para alternar modo oscuro -->
+<script>
+    const toggleBtn = document.getElementById('toggle-dark');
+
+    function updateIcon() {
+        toggleBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+
+        // Guardar preferencia
+        if(document.body.classList.contains('dark-mode')){
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+
+        updateIcon();
+    });
+
+    // Aplicar tema guardado al cargar
+    if(localStorage.getItem('theme') === 'dark'){
+        document.body.classList.add('dark-mode');
+    }
+    updateIcon();
+</script>
+
 </body>
 </html>

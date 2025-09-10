@@ -1,6 +1,9 @@
+/* ===== ESTILOS GENERALES ===== */
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 h1 {
@@ -10,10 +13,19 @@ h1 {
 form input[type="text"] {
     width: 300px;
     padding: 5px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }
 
-form button {
+form button[type="submit"] {
     padding: 5px 10px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 ul {
@@ -42,3 +54,44 @@ li {
     border-radius: 3px;
     background-color: #eee;
 }
+
+/* ===== BOTÓN MODO OSCURO ===== */
+/* ===== MODO OSCURO ===== */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode h1 {
+    color: #fff;
+}
+
+/* Inputs y botones */
+body.dark-mode form input[type="text"],
+body.dark-mode form button[type="submit"] {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+}
+
+/* Links de resultados */
+body.dark-mode a {
+    color: #4ea1ff;  /* azul claro para buena visibilidad */
+    text-decoration: underline;
+}
+
+/* Paginación */
+body.dark-mode .pagination a,
+body.dark-mode .pagination span.current {
+    border-color: #555;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+/* Botón modo oscuro */
+body.dark-mode #toggle-dark {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
