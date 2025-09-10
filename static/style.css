@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+form input[type="text"] {
+    width: 300px;
+    padding: 5px;
+}
+
+form button {
+    padding: 5px 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #333;
+}
+
+.pagination span.current {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-weight: bold;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-color: #eee;
+}

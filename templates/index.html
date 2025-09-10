@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscador IA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🔎 Buscador Inteligente</h1>
+    <form method="post">
+        <input type="text" name="query" value="{{ query }}" placeholder="Escribe tu búsqueda...">
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if resultados %}
+        <h2>Resultados:</h2>
+        <ul>
+        {% for url, texto, score in resultados %}
+            <li>
+                <a href="{{ url }}" target="_blank">{{ url }}</a><br>
+                <small>Relevancia: {{ "%.2f"|format(score) }}</small>
+                <p>{{ texto[:300] }}{% if texto|length > 300 %}...{% endif %}</p>
+            </li>
+        {% endfor %}
+        </ul>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+                <a href="/?query={{ query }}&page=1">Primera</a>
+                <a href="/?query={{ query }}&page={{ page-1 }}">« Anterior</a>
+            {% endif %}
+
+            {# Mostrar 2 páginas antes y después de la actual #}
+            {% for p in range(page-2, page+3) %}
+                {% if 1 <= p <= total_pages %}
+                    {% if p == page %}
+                        <span class="current">{{ p }}</span>
+                    {% else %}
+                        <a href="/?query={{ query }}&page={{ p }}">{{ p }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <a href="/?query={{ query }}&page={{ page+1 }}">Siguiente »</a>
+                <a href="/?query={{ query }}&page={{ total_pages }}">Última</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
