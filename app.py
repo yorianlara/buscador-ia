@@ -10,6 +10,7 @@ import torch
 app = Flask(__name__)
 
 # Detectar dispositivo: GPU si está disponible
+torch.set_num_threads(2)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Usando dispositivo: {device}")
 
@@ -43,14 +44,45 @@ async def fetch_all(urls):
 def buscar_multi_motor(query, max_results=50):
     resultados = []
 
-    # DuckDuckGo
-    with DDGS() as ddgs:
-        resultados += list(ddgs.text(query, max_results=max_results))
+    # 1️⃣ DuckDuckGo
+    try:
+        with DDGS() as ddgs:
+            resultados += list(ddgs.text(query, max_results=max_results))
+    except Exception as e:
+        print("Error DuckDuckGo:", e)
 
-    # Motor adicional simulado (ej: Qwant / Startpage)
-    # Aquí puedes implementar scraping real
-    # Ejemplo conceptual: resultados ficticios
-    # resultados += [{"href": "https://example.com", "body": "Texto ejemplo", "title": "Ejemplo"}]
+    # 2️⃣ Google Search (sin API)
+    try:
+        from googlesearch import search
+        google_urls = list(search(query, num_results=10))
+        for url in google_urls:
+            resultados.append({"href": url, "title": "", "body": ""})
+    except Exception as e:
+        print("Error Google:", e)
+
+    # 3️⃣ Qwant (sin API key)
+    try:
+        import requests
+        url_qwant = "https://api.qwant.com/api/search/web"
+        params = {
+            "q": query,
+            "t": "web",
+            "count": 10,
+            "uiv": 4,
+            "locale": "en_US",
+            "safesearch": 1
+        }
+        resp = requests.get(url_qwant, params=params)
+        data = resp.json()
+        items = data.get("data", {}).get("result", {}).get("items", [])
+        for item in items:
+            resultados.append({
+                "href": item.get("url"),
+                "title": item.get("title"),
+                "body": item.get("desc")
+            })
+    except Exception as e:
+        print("Error Qwant:", e)
 
     # Eliminar duplicados por URL
     seen = set()
@@ -62,6 +94,7 @@ def buscar_multi_motor(query, max_results=50):
             seen.add(href)
 
     return resultados_unicos
+
 
 # Función principal de búsqueda con LRU cache
 @lru_cache(maxsize=MAX_CACHE)
